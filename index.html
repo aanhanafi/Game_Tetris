@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Tetris Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            margin: 0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            color: #00fff2;
+        }
+
+        .game-container {
+            display: flex;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #game-board {
+            background-color: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00fff2;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        #next-piece {
+            background-color: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00fff2;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        }
+        /* Styling untuk tombol Start, Pause, dan Reset */
+button {
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    margin: 5px;
+}
+
+/* Hover effect */
+button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Active (klik) effect */
+button:active {
+    background-color: #004085;
+    transform: translateY(2px);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Tambahan styling untuk tombol Reset */
+#reset-btn {
+    background-color: #dc3545;
+}
+
+#reset-btn:hover {
+    background-color: #b21f2d;
+}
+
+#reset-btn:active {
+    background-color: #891a25;
+}
+
+/* Tambahan styling untuk tombol Pause */
+#pause-btn {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+#pause-btn:hover {
+    background-color: #e0a800;
+}
+
+#pause-btn:active {
+    background-color: #d39e00;
+}
+/* Styling untuk container Top Score */
+#score-container {
+    font-family: 'Arial', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    background-color: #f8f9fa;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect untuk Top Score container */
+#score-container:hover {
+    background-color: #e9ecef;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+}
+
+/* Styling untuk teks Top Score */
+#score-container p {
+    margin: 0;
+    color: #007bff;
+}
+
+#score-container span {
+    color: #dc3545;
+    font-size: 24px;
+}
+
+
+        .score-container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00fff2;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        }
+
+        .score-container h2 {
+            margin: 0;
+            color: #00fff2;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        #score {
+            font-size: 2em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .controls {
+            margin-top: 30px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00fff2;
+        }
+
+        .controls p {
+            margin: 10px 0;
+            color: #fff;
+        }
+
+        .controls p:first-child {
+            color: #00fff2;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .key {
+            background: rgba(0, 255, 242, 0.1);
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #00fff2;
+            display: inline-block;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>TETRIS</h1>
+    <div class="game-container">
+        <canvas id="game-board" width="300" height="600"></canvas>
+        <div class="info-panel">
+            <div class="score-container">
+                <h2>Score</h2>
+                <div id="score">0</div>
+            </div>
+            <div class="score-container">
+                <h2>Next Piece</h2>
+                <canvas id="next-piece" width="120" height="120"></canvas>
+            </div>
+            <div id="score-container">
+                <p>Top Score: <span id="top-score">0</span></p>
+            </div>
+            <div>
+                <button id="start-btn">Start</button>
+                <!-- Tombol untuk Pause Game -->
+            <button id="pause-btn" style="display:none;">Pause</button>
+
+            <!-- Tombol untuk Reset Game -->
+            <button id="reset-btn">Reset Game</button>
+            </div>
+        </div>
+    </div>
+    <div class="controls">
+        <p>Controls</p>
+        <p><span class="key">←</span> <span class="key">→</span> Move Left/Right</p>
+        <p><span class="key">↑</span> Rotate</p>
+        <p><span class="key">↓</span> Soft Drop</p>
+        <p><span class="key">Space</span> Pause</p>
+    </div>
+    <script src="tetris.js"></script>
+</body>
+</html>
